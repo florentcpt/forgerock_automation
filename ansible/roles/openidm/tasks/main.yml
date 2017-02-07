@@ -1,0 +1,30 @@
+---
+
+##
+## Deploy
+##
+- block:
+  - name: 'Create directories'
+    file:
+      path: '{{ item }}'
+      state: 'directory'
+    with_items:
+      - '{{ openidm_install_dir }}'
+      - '{{ openidm_pid_file | dirname }}'
+      - '{{ openidm_log_file | dirname }}'
+      - '{{ openidm_init_script | dirname }}'
+
+  - name: 'Deploy artefact'
+    unarchive:
+      src: '../openidm-4.0.0.zip'
+      dest: '{{ openidm_install_dir | dirname }}'
+
+##
+## Configure
+##
+- block:
+  - name: 'Install init script'
+    template:
+      src: 'openidmd.j2'
+      dest: '{{ openidm_init_script }}'
+      mode: '0766'

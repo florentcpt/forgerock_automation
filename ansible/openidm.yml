@@ -1,0 +1,5 @@
+---
+- name: 'OpenIDM servers'
+  hosts: openidm
+  roles:
+    - openidm

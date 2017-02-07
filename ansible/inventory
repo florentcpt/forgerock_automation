@@ -1,0 +1,8 @@
+[opendj]
+opendj ansible_host="opendj.demofr.local" ip_addr="192.168.66.10"
+
+[openidm]
+openidm ansible_host="openidm.demofr.local" ip_addr="192.168.66.11"
+
+[openam]
+openam ansible_host="openam.demofr.local" ip_addr="192.168.66.12"

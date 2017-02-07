@@ -1,0 +1,65 @@
+#!/bin/bash
+
+source /etc/rc.d/init.d/functions
+
+prog="openidm"
+exec="{{ openidm_install_dir }}/startup.sh"
+pid_file="{{ openidm_pid_file }}"
+
+export OPENIDM_PID_FILE=$pid_file
+export OPENIDM_HOME="{{ openidm_install_dir }}"
+export OPENIDM_OPTS="-Xmx1024m -Xms1024m"
+
+start() {
+  echo -n $"Starting $prog: "
+  nohup $exec >{{ openidm_log_file }} 2>&1&
+  retval=$?
+  sleep 5
+  my_status >/dev/null 2>&1 && success || { failure; retval=10; }
+  echo
+  return $retval
+}
+
+stop() {
+  echo -n $"Stoping $prog: "
+  pkill -P $(cat $pid_file)
+  retval=$?
+  while my_status >/dev/null 2>&1; do
+    sleep 1
+  done
+  rm $pid_file && success || { failure; retval=10; }
+  echo
+  return $retval
+}
+
+my_status() {
+  status -p $pid_file $prog
+}
+
+case "$1" in
+  start)
+    my_status >/dev/null && exit 0
+    $1
+    ;;
+
+  stop)
+    my_status >/dev/null || exit 0
+    $1
+    ;;
+
+  restart)
+    stop
+    start
+    ;;
+
+  status)
+    my_status
+    ;;
+
+  *)
+    echo >&2 "Usage: $0 {start|stop|restart|status}"
+    return 1
+    ;;
+esac
+
+exit $?

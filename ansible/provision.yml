@@ -1,0 +1,34 @@
+---
+- name: 'All servers'
+  hosts: all
+  vars:
+    ansible_become: yes
+    forgerock_user: 'fruser'
+  tasks:
+    - name: 'Create forgerock account'
+      user:
+        comment: 'Forgerock account'
+        createhome: yes
+        name: '{{ forgerock_user }}'
+        home: '/home/{{ forgerock_user }}'
+
+    - name: 'Deploy SSH public key'
+      authorized_key:
+        exclusive: yes
+        key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCryArc2zLjS7UJ4s6MU+WWSQ7MGs8cHkh38sjmn5BUubZbzEQhmClAhIlRrHR1zUdS5QvOqg02jwDl1ya0G2vllTToF970jPir2HiLwhQJ/oIpUdV9K4UwGxbaT+RO37+OBMYIoVQfCounZixdnpy4HTipeknOymtr9Jsh5oKQO30beijrgIq8FjkXsJPQL9C0vJW78ULJXPVcUNITjaiTozK7y4bFWwREOm/hHakMImPNnBXKu5dNv8IhjvwxNMSDXlzijacITK4s/Z8EvjCOBS+OKFYQpRB2fnWhsBNSaiDi03QSg+9JYWI9VVG3G8trlfCGNvozsB6rfRUUzl33 id_rsa_fruser'
+        manage_dir: yes
+        user: '{{ forgerock_user }}'
+
+    - name: 'Install additional packages'
+      yum:
+        name: '{{ item }}'
+        state: 'installed'
+      with_items:
+        - 'unzip'
+        - 'java-1.8.0-openjdk'
+
+    # Fix an issue with Vagrant and CentOS => https://github.com/mitchellh/vagrant/issues/5590
+    # - name: 'Restart network service (bug with Vagrant and CentOS)'
+    #   service:
+    #     name: 'network'
+    #     state: 'restarted'

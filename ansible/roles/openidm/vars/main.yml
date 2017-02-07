@@ -1,0 +1,5 @@
+---
+openidm_install_dir: '{{ ansible_user_dir }}/opt/openidm'
+openidm_pid_file: '{{ ansible_user_dir }}/var/run/openidm.pid'
+openidm_log_file: '{{ ansible_user_dir }}/var/log/openidm.out'
+openidm_init_script: '{{ ansible_user_dir }}/etc/init.d/openidmd'

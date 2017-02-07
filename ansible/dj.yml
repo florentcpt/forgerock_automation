@@ -1,0 +1,5 @@
+---
+  - name: 'OpenDJs'
+    hosts: all
+    roles:
+      - { role: 'opendj' }
